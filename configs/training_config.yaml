@@ -1,0 +1,14 @@
+model:
+  input_dim: 150 # dimension of input (num timesteps)
+  output_dim: 4 # dimension of output (num parameters)
+
+training:
+  epoch: 0 # epoch number to start from. If > 0, try to load model saved at that epoch
+  n_epochs: 200 # paper suggested 200 epochs gave best results
+  batch_size: 50
+  lr: 0.001
+  n_cpu: 4
+
+
+dataset_name: synthetic # name of folder in data folder containing dataset.
+experiment_name: test # name of experiment
