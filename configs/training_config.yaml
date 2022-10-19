@@ -10,5 +10,8 @@ training:
   n_cpu: 4
 
 
+testing:
+  epoch_test: 199
+
 dataset_name: synthetic # name of folder in data folder containing dataset.
 experiment_name: test # name of experiment
