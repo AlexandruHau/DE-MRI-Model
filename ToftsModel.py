@@ -113,7 +113,7 @@ def main():
         G[i] = ToftsModel(params[i], t, AIF)
 
     # Save now the two arrays in .npy format
-    np.save("synthetic_curves.npy", G)
-    np.save("synthetic_params.npy", params)
+    np.save("data/synthetic/synthetic_curves.npy", G)
+    np.save("data/synthetic/synthetic_params.npy", params)
 
 main()
