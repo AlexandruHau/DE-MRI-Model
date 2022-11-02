@@ -81,26 +81,17 @@ def main():
 
             curves = Variable(batch["X"].type(Tensor))
             gt = Variable(batch["Y"].type(Tensor))
-            
-            # Concatenate the parameter and the curves tensors from the
-            # training input into one tensor
-            test_tensor = torch.cat([gt, curves], dim = 1)
+
             model.zero_grad()
             output = model(curves)
 
-            # Make a copy of the output tensor of size (50, 154) - 4 elements
-            # representing the parameters of the curve and 150 elements representing
-            # the curve array / linear tensor. NOTE: 50 represents the size of the batch.
-            # Then, the last 150 elements are updated using the predicted curve parameters
-            # (1st four elements of the output)
-            np_output = output.clone().detach().cpu().numpy()
-            for i in range(np_output.shape[0]):
-                np_output[i][4:] = ToftsModel(np_output[i][:4], t, AIF)
-            output[4:] = torch.from_numpy(np_output[4:]).to(output)
+            predicted_curves = np.zeros((50, 150))
+            predicted_params = output.clone().detach().cpu().numpy()
+            for i in range (predicted_curves.shape[0]):
+                predicted_curves[i] = ToftsModel(predicted_params[i], t, AIF)
 
-            # The loss of tensor merging both the predicted parameters and predicted 
-            # curve is worked out
-            loss = criterion(output, test_tensor)
+            predicted_tensor = torch.tensor(predicted_curves, device="cuda:0")
+            loss = criterion(predicted_tensor, curves)
             loss.backward()
             optimiser.step()
 
