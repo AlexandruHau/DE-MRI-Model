@@ -35,9 +35,24 @@ def main(args, curves_path, params_path):
         f.write(os.path.join(params_path, str(i) + ".npy") + "\n")
         f.close()
 
+    # Now save all the data in separate directory
+    for i in range(dataset_length):
+
+        np.save(os.path.join(curves_path, str(i)), curves[i])
+        np.save(os.path.join(params_path, str(i)), params[i])
+
+        f = open("datasplits/data/curves.txt", "a")
+        f.write(os.path.join(curves_path, str(i) + ".npy") + "\n")
+        f.close()
+
+        f = open("datasplits/data/params.txt", "a")
+        f.write(os.path.join(params_path, str(i) + ".npy") + "\n")
+        f.close()
+
 if __name__ == "__main__":
     os.makedirs("datasplits/" + sys.argv[3] + "/train", exist_ok=True)
     os.makedirs("datasplits/" + sys.argv[3] + "/test", exist_ok=True)
+    os.makedirs("datasplits/data/", exist_ok=True)
     curves_path = "data/" + sys.argv[3] + "/curves"
     params_path = "data/" + sys.argv[3] + "/params"
     os.makedirs(curves_path, exist_ok=True)
