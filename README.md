@@ -1,7 +1,7 @@
 # DE-MRI-Model
 ## Alexandru-Mihai Hau
 
-The project approaches the estimation of the Glomerular Flow Rate (GFR) parameter of the kidney using the Multiperceptron architecture for a neural network.
+The project approaches the Dynamic Contrast-Enhanced Magnetic Resonance Imaging methods for estimating the vascular system of the region surrounding the kidney. The Extended Tofts Model is used as the pharmacokinetic model. The patient is administered intravenously a Contrast Agent Gd concentration which represents the Arterial Input Function. However, the CA concentration in the kidney is different, given by the Extended Tofts Model Equation. This project approaches the estimation of the following parameters: the transfer rate of CA from the plasma to the kidney, the plasma volume fraction, the time decay constant of the CA sample and the time offset. This has been done by implementing the Multi-Layer Perceptron MLP Architecture for an Artifical Neural Network.
 
 ### Instructions to run the code
 
