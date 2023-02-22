@@ -38,7 +38,7 @@ def ToftsModel(params, t, AIF):
     #Calculate Ct, this is the sum of vdCd and vpCpKid
     Ct = vdCd + (vp * CpKid)
 
-    plt.plot(tnew, Ct)
+    # plt.plot(tnew, Ct)
 
     return Ct
 
@@ -79,13 +79,15 @@ def Initialize_InputParams():
     # delta variable from 1 to 3.5
     delta = np.random.uniform(1, 3.5, 10000)
 
+    print(f"delta array: {delta}")
+
     # Analyse now the distribution of the mean residence 
     # time MRT value - normal distribution of mean value 5.5
     # and standard deviation of 0.7
     MRT = np.random.normal(5.5, 0.7, 10000)
 
     # Now calculate the exponential decay time constant Tg
-    Tg = MRT - delta 
+    Tg = np.abs(MRT - delta)
 
     # NEW IMPLEMENTATION
     # Declare a calibration factor for the K parameter ->
@@ -140,8 +142,12 @@ def main():
         # Go back to the new scale
         params[i][0] = params[i][0] * K_calibration
 
+        if(np.isnan(np.sum(G[i]))):
+            print(f"Parameters: {params[i]} at count {i}")
+            print(f"Array: {G[i]}")
+
     # Save now the two arrays in .npy format
-    np.save("data/synthetic/synthetic_curves.npy", G)
-    np.save("data/synthetic/synthetic_params.npy", params)
+    np.save("data/trials/synthetic_curves.npy", G)
+    np.save("data/trials/synthetic_params.npy", params)
 
 main()

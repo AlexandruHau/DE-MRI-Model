@@ -20,6 +20,7 @@ from torch.autograd import Variable
 
 from models import *
 from datasets import *
+from ToftsModel import *
 
 # Implement the early stopper class in order to avoid
 # overfitting the network
@@ -73,9 +74,8 @@ def main():
             shuffle=True,
             num_workers=config['training']['n_cpu'])
         
-
     prev_time = time.time()
-    early_stopper = EarlyStopper(patience=5, min_delta=0.5)
+    early_stopper = EarlyStopper(patience=3, min_delta=0.005)
 
     for epoch in range(config['training']['epoch'], config['training']['n_epochs']):
         for i, batch in enumerate(train_dataloader):
@@ -85,9 +85,10 @@ def main():
 
             model.zero_grad()
             output = model(curves)
-            loss = criterion(output, gt)
+            loss = criterion(output, gt) 
             loss.backward()
             optimiser.step()
+            print(f"\n Loss: {loss.item()} \n")
 
             # Determine approximate time left
             batches_done = epoch * len(train_dataloader) + i
@@ -109,7 +110,7 @@ def main():
 
             model.zero_grad()
             output = model(curves)
-            loss = criterion(output, gt)
+            loss = criterion(output, gt) 
             loss.backward()
             optimiser.step()  
 
