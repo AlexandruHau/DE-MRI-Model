@@ -76,18 +76,29 @@ def Initialize_InputParams():
 
     new_arr = np.array(np.meshgrid(Ktrans, vp)).T.reshape(-1, 2)
     # Take now the uniform random distribution for the 
-    # delta variable from 1 to 3.5
-    delta = np.random.uniform(1, 3.5, 10000)
+    # delta variable from 1 to 3.5 as well as the Tg time decay
+    # constant from te MRT parameter
+    threshold = 10000
+    delta = np.zeros(threshold)
+    Tg = np.zeros(threshold)
 
-    print(f"delta array: {delta}")
+    # Put all of the element appending into a while loop
+    counter = 0
+    while(counter < threshold):
 
-    # Analyse now the distribution of the mean residence 
-    # time MRT value - normal distribution of mean value 5.5
-    # and standard deviation of 0.7
-    MRT = np.random.normal(5.5, 0.7, 10000)
+        # Need the time offset delta between 1 and 3.5 seconds,
+        # the MRT parameter taking normal distribution bof mean value
+        # 5.5 and standard deviation 0.7
+        d = np.random.uniform(1, 3.5)
+        MRT = np.random.normal(5.5, 0.7)
 
-    # Now calculate the exponential decay time constant Tg
-    Tg = np.abs(MRT - delta)
+        # Define now the Tg parameter and set the conditions of the Tg
+        # parameter being greater than 0.02
+        tg = MRT - d
+        if(tg > 0.02):
+            delta[counter] = d
+            Tg[counter] = tg 
+            counter += 1
 
     # NEW IMPLEMENTATION
     # Declare a calibration factor for the K parameter ->
@@ -101,6 +112,20 @@ def Initialize_InputParams():
     params[2] = new_arr[:,1] 
     params[3] = delta 
     return params.T
+
+    '''
+    delta = np.random.uniform(1, 3.5, 10000)
+
+    print(f"delta array: {delta}")
+
+    # Analyse now the distribution of the mean residence 
+    # time MRT value - normal distribution of mean value 5.5
+    # and standard deviation of 0.7
+    MRT = np.random.normal(5.5, 0.7, 10000)
+
+    # Now calculate the exponential decay time constant Tg
+    Tg = np.abs(MRT - delta)
+    '''
 
 def main():
     
@@ -147,7 +172,7 @@ def main():
             print(f"Array: {G[i]}")
 
     # Save now the two arrays in .npy format
-    np.save("data/trials/synthetic_curves.npy", G)
-    np.save("data/trials/synthetic_params.npy", params)
+    np.save("data/synthetic/synthetic_curves.npy", G)
+    np.save("data/synthetic/synthetic_params.npy", params)
 
 main()
