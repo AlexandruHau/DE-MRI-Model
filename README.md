@@ -5,8 +5,12 @@ The project approaches the Dynamic Contrast-Enhanced Magnetic Resonance Imaging 
 
 ### Instructions to run the code
 
+To generate the 10,000 CA functions and the 1,500 parameter sets - all saved in a .npy file, run:
 ```
 python3 ToftsModel.py
+```
+
+```
 python3 sort_data.py data/synthetic/synthetic_curves.npy data/synthetic/synthetic_params.py synthetic
 python3 GFR_Kidneys_DL.py
 python3 test_model.py
