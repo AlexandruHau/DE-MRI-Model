@@ -15,7 +15,7 @@ Next, the following file takes the file index number and retains the folder name
 python3 sort_data.py data/synthetic/synthetic_curves.npy data/synthetic/synthetic_params.py synthetic
 ```
 
-The actual training process starts here:
+The actual training process starts here - the Model.py file is called in, where the MLP model is designed. The cross-validation method is also incorporated
 ```
 python3 GFR_Kidneys_DL.py
 ```
