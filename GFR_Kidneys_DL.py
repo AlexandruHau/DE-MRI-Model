@@ -20,6 +20,7 @@ from torch.autograd import Variable
 
 from models import *
 from datasets import *
+from ToftsModel import *
 
 # Implement the early stopper class in order to avoid
 # overfitting the network
@@ -73,11 +74,12 @@ def main():
             shuffle=True,
             num_workers=config['training']['n_cpu'])
         
-
     prev_time = time.time()
-    early_stopper = EarlyStopper(patience=5, min_delta=0.5)
+    early_stopper = EarlyStopper(patience=7, min_delta=0.2)
 
     for epoch in range(config['training']['epoch'], config['training']['n_epochs']):
+
+        model.train()
         for i, batch in enumerate(train_dataloader):
 
             curves = Variable(batch["X"].type(Tensor))
@@ -85,10 +87,10 @@ def main():
 
             model.zero_grad()
             output = model(curves)
-            loss = criterion(output, gt)
+            loss = criterion(output, gt) 
             loss.backward()
             optimiser.step()
-
+            # print(f"\n Loss: {loss.item()} \n")
             # Determine approximate time left
             batches_done = epoch * len(train_dataloader) + i
             batches_left = config['training']['n_epochs'] * len(train_dataloader) - batches_done
@@ -99,24 +101,20 @@ def main():
                 "\r[Epoch %d/%d] [Batch %d/%d] Loss: %f] ETA: %s"
                 % (epoch, config['training']['n_epochs'], i, len(train_dataloader), loss.item(), time_left)
             )
-
         validation_loss = 0
-
+        
+        model.eval()
         for i, batch in enumerate(validation_dataloader):
 
             curves = Variable(batch["X"].type(Tensor))
             gt = Variable(batch["Y"].type(Tensor))
-
-            model.zero_grad()
             output = model(curves)
-            loss = criterion(output, gt)
-            loss.backward()
-            optimiser.step()  
-
+            loss = criterion(output, gt)  
             validation_loss += loss.item()
 
         validation_loss = validation_loss / len(validation_dataloader)          
-        print(f"Validation loss at epoch {epoch} is: {validation_loss}")
+        print(f"\n Validation loss at epoch {epoch} is: {validation_loss} \n")
+        print(f"Counter: {early_stopper.counter} \n")
         if early_stopper.early_stop(validation_loss):
             torch.save(model.state_dict(), "saved_models/%s/%d.pth" % (config['experiment_name'], epoch))             
             break

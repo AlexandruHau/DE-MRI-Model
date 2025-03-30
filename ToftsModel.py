@@ -38,7 +38,7 @@ def ToftsModel(params, t, AIF):
     #Calculate Ct, this is the sum of vdCd and vpCpKid
     Ct = vdCd + (vp * CpKid)
 
-    plt.plot(tnew, Ct)
+    # plt.plot(tnew, Ct)
 
     return Ct
 
@@ -64,6 +64,27 @@ def InitializeParameters():
     # Initialize the volume fraction 
     return Ktrans, Tg, vp, delta
 
+def InitializeParametersTwo():
+
+    # Initialize the volume transfer constant: Ktrans is set
+    # as 0.25 in units of 1 / min converted into 1 / s
+    Ktrans = 4.1e-3
+
+    # The time offset delta is set to 2.25 s
+    delta = 2
+
+    # Initialize the plasma volume as well with mm^3 units
+    vp = 0.7
+
+    # Initialize the MRT
+    MRT = 5.5
+
+    # Initialize the Tg period
+    Tg = MRT - delta
+
+    # Initialize the volume fraction 
+    return Ktrans, Tg, vp, delta
+
 def Initialize_InputParams():
     # Initialize the Ktrans parameter array of size 1000 with
     # mean value of 0.25 and standard deviation of 0.1 and 
@@ -76,16 +97,29 @@ def Initialize_InputParams():
 
     new_arr = np.array(np.meshgrid(Ktrans, vp)).T.reshape(-1, 2)
     # Take now the uniform random distribution for the 
-    # delta variable from 1 to 3.5
-    delta = np.random.uniform(1, 3.5, 10000)
+    # delta variable from 1 to 3.5 as well as the Tg time decay
+    # constant from te MRT parameter
+    threshold = 10000
+    delta = np.zeros(threshold)
+    Tg = np.zeros(threshold)
 
-    # Analyse now the distribution of the mean residence 
-    # time MRT value - normal distribution of mean value 5.5
-    # and standard deviation of 0.7
-    MRT = np.random.normal(5.5, 0.7, 10000)
+    # Put all of the element appending into a while loop
+    counter = 0
+    while(counter < threshold):
 
-    # Now calculate the exponential decay time constant Tg
-    Tg = MRT - delta 
+        # Need the time offset delta between 1 and 3.5 seconds,
+        # the MRT parameter taking normal distribution bof mean value
+        # 5.5 and standard deviation 0.7
+        d = np.random.uniform(1, 3.5)
+        MRT = np.random.normal(5.5, 0.7)
+
+        # Define now the Tg parameter and set the conditions of the Tg
+        # parameter being greater than 0.02
+        tg = MRT - d
+        if(tg > 0.02):
+            delta[counter] = d
+            Tg[counter] = tg 
+            counter += 1
 
     # NEW IMPLEMENTATION
     # Declare a calibration factor for the K parameter ->
@@ -99,6 +133,20 @@ def Initialize_InputParams():
     params[2] = new_arr[:,1] 
     params[3] = delta 
     return params.T
+
+    '''
+    delta = np.random.uniform(1, 3.5, 10000)
+
+    print(f"delta array: {delta}")
+
+    # Analyse now the distribution of the mean residence 
+    # time MRT value - normal distribution of mean value 5.5
+    # and standard deviation of 0.7
+    MRT = np.random.normal(5.5, 0.7, 10000)
+
+    # Now calculate the exponential decay time constant Tg
+    Tg = np.abs(MRT - delta)
+    '''
 
 def main():
     
@@ -114,20 +162,24 @@ def main():
     # Initialize the array of (1000, 4) size with
     # the parameters to work out all the convoluted curves
     params = InitializeParameters()
+    paramstwo = InitializeParametersTwo()
     curve = ToftsModel(params, t, AIF)
+    curvetwo = ToftsModel(paramstwo, t, AIF)
 
     print(curve.shape)
     print(tnew.shape)
 
     # plt.plot(AIF, color='b')
     plt.plot(tnew, curve, color='red')
+    plt.plot(tnew, curvetwo, color='blue')
     plt.show()
 
-    params = Initialize_InputParams()
+    # params = Initialize_InputParams()
 
     # Now initialize an empty array of size (1000, 150) and
     # each line corresponds to a different TOFTS curve of 
     # parameters suggested by the previous params array
+    '''
     G = np.zeros((10000, 1500))
     for i in range(10000):
         
@@ -140,8 +192,13 @@ def main():
         # Go back to the new scale
         params[i][0] = params[i][0] * K_calibration
 
+        if(np.isnan(np.sum(G[i]))):
+            print(f"Parameters: {params[i]} at count {i}")
+            print(f"Array: {G[i]}")
+
     # Save now the two arrays in .npy format
     np.save("data/synthetic/synthetic_curves.npy", G)
     np.save("data/synthetic/synthetic_params.npy", params)
+    '''
 
 main()

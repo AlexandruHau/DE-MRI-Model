@@ -55,6 +55,8 @@ def main():
     # set the criterion function as the Mean Squared Error MSE()
     model.load_state_dict(torch.load("saved_models/%s/%d.pth" % (config['experiment_name'], config['testing']['epoch_test'])))
 
+    print("Test file: " + str(config['testing']['epoch_test']))
+
     criterion = nn.MSELoss()
 
     # Use the DataLoader class from the pytorch library in order to
@@ -111,6 +113,9 @@ def main():
     
     df = pd.DataFrame({"Input params" : input_params.flatten(), "Predicted params" : predicted_params.flatten()})
     df.to_csv("Parameters_GFR.csv")
+
+    print("Test file: " + str(config['testing']['epoch_test']))
+
 
 if __name__ == '__main__':
     main()
