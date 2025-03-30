@@ -179,7 +179,7 @@ def main():
     # Now initialize an empty array of size (1000, 150) and
     # each line corresponds to a different TOFTS curve of 
     # parameters suggested by the previous params array
-    '''
+    
     G = np.zeros((10000, 1500))
     for i in range(10000):
         
@@ -199,6 +199,5 @@ def main():
     # Save now the two arrays in .npy format
     np.save("data/synthetic/synthetic_curves.npy", G)
     np.save("data/synthetic/synthetic_params.npy", params)
-    '''
 
 main()
