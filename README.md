@@ -14,24 +14,32 @@ scikit-learn 0.23.1
 
 ### Instructions to run the code
 
-To generate the 10,000 CA functions and the 1,500 parameter sets - all saved in the two files data/synthetic/synthetic_curves.npy and data/synthetic/synthetic_params.npy, run:
+#### Data pre-processing & Input
+
+To generate the 10,000 CA functions and parameter sets, run:
 ```
 python3 ToftsModel.py
+```
+
+The 10,000 CA functions each of 1,500 elements and the 10,000 parameter sets are saved in:
+```
+data/synthetic/synthetic_curves.npy
+data/synthetic/synthetic_params.npy
 ```
 Next, the following file takes the file index number and retains the folder name in a .txt file - this is done for the training, validation and test files, as they will all be called in PyTorch:
 
 ```
 python3 sort_data.py data/synthetic/synthetic_curves.npy data/synthetic/synthetic_params.py synthetic
 ```
-
-The actual training process starts here - the Model.py file is called in, where the MLP model is designed. The cross-validation method is also incorporated and subsequently tested:
+#### Training
+The actual training process starts here - the Model.py file is called in, where the MLP model is designed. The cross-validation method is also incorporated. 
 ```
 python3 GFR_Kidneys_DL.py
+```
+
+#### Testing
+
+For testing the network, run:
+```
 python3 TestModel_CrossValidation.py
-```
-
-For checking the correlation plots between the input ground truth and the predicted parameters, run the following:
-
-```
-python3 ToftsModel_plots.py
 ```
