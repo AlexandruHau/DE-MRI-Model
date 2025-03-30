@@ -5,14 +5,21 @@ The project approaches the Dynamic Contrast-Enhanced Magnetic Resonance Imaging 
 
 ### Instructions to run the code
 
-To generate the 10,000 CA functions and the 1,500 parameter sets - all saved in a .npy file, run:
+To generate the 10,000 CA functions and the 1,500 parameter sets - all saved in the two files data/synthetic/synthetic_curves.npy and data/synthetic/synthetic_params.npy, run:
 ```
 python3 ToftsModel.py
 ```
+Next, the following file takes the file index number and retains the folder name in a .txt file - this is done for the training, validation and test files, as they will all be called in PyTorch:
 
 ```
 python3 sort_data.py data/synthetic/synthetic_curves.npy data/synthetic/synthetic_params.py synthetic
+```
+
+The actual training process starts here:
+```
 python3 GFR_Kidneys_DL.py
+```
+
 python3 test_model.py
 ```
 
