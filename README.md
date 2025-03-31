@@ -29,7 +29,7 @@ data/synthetic/synthetic_params.npy
 Next, the following file takes the file index number and retains the folder name in a .txt file - this is done for the training, validation and test files, as they will all be called in PyTorch:
 
 ```
-python3 sort_data.py data/synthetic/synthetic_curves.npy data/synthetic/synthetic_params.py synthetic
+python3 sort_data.py data/synthetic/synthetic_curves.npy data/synthetic/synthetic_params.npy synthetic
 ```
 
 For each fold from the cross-validation, the following folders are created:
